@@ -392,7 +392,7 @@ export function OnboardingWizard() {
 
       setStep(2);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to create company");
+      setError(err instanceof Error ? err.message : t("onboarding.failedToCreateCompany"));
     } finally {
       setLoading(false);
     }
@@ -462,7 +462,7 @@ export function OnboardingWizard() {
       });
       setStep(3);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to create agent");
+      setError(err instanceof Error ? err.message : t("onboarding.failedToCreateAgent"));
     } finally {
       setLoading(false);
     }
@@ -554,7 +554,7 @@ export function OnboardingWizard() {
           : `/issues/${issueRef}`
       );
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to create task");
+      setError(err instanceof Error ? err.message : t("onboarding.failedToCreateTask"));
     } finally {
       setLoading(false);
     }
@@ -1353,12 +1353,13 @@ function AdapterEnvironmentResult({
 }: {
   result: AdapterEnvironmentTestResult;
 }) {
+  const { t } = useTranslation();
   const statusLabel =
     result.status === "pass"
-      ? "Passed"
+      ? t("onboarding.passed")
       : result.status === "warn"
-      ? "Warnings"
-      : "Failed";
+      ? t("onboarding.warnings")
+      : t("onboarding.failed");
   const statusClass =
     result.status === "pass"
       ? "text-green-700 dark:text-green-300 border-green-300 dark:border-green-500/40 bg-green-50 dark:bg-green-500/10"
