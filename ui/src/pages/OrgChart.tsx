@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, useMemo, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "@/lib/router";
 import { useQuery } from "@tanstack/react-query";
 import { agentsApi, type OrgNode } from "../api/agents";
@@ -142,6 +143,7 @@ export function OrgChart() {
   const { selectedCompanyId } = useCompany();
   const { setBreadcrumbs } = useBreadcrumbs();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const { data: orgTree, isLoading } = useQuery({
     queryKey: queryKeys.org(selectedCompanyId!),
@@ -162,8 +164,8 @@ export function OrgChart() {
   }, [agents]);
 
   useEffect(() => {
-    setBreadcrumbs([{ label: "Org Chart" }]);
-  }, [setBreadcrumbs]);
+    setBreadcrumbs([{ label: t("org.breadcrumb") }]);
+  }, [setBreadcrumbs, t]);
 
   // Layout computation
   const layout = useMemo(() => layoutForest(orgTree ?? []), [orgTree]);
@@ -255,7 +257,7 @@ export function OrgChart() {
   }, [zoom, pan]);
 
   if (!selectedCompanyId) {
-    return <EmptyState icon={Network} message="Select a company to view the org chart." />;
+    return <EmptyState icon={Network} message={t("org.selectCompanyOrgChart")} />;
   }
 
   if (isLoading) {
@@ -263,7 +265,7 @@ export function OrgChart() {
   }
 
   if (orgTree && orgTree.length === 0) {
-    return <EmptyState icon={Network} message="No organizational hierarchy defined." />;
+    return <EmptyState icon={Network} message={t("agents.noOrgHierarchy")} />;
   }
 
   return (
@@ -327,10 +329,10 @@ export function OrgChart() {
             setZoom(fitZoom);
             setPan({ x: (cW - chartW) / 2, y: (cH - chartH) / 2 });
           }}
-          title="Fit to screen"
-          aria-label="Fit chart to screen"
+          title={t("common.fit")}
+          aria-label={t("common.fit")}
         >
-          Fit
+          {t("common.fit")}
         </button>
       </div>
 

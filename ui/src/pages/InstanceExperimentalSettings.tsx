@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { FlaskConical } from "lucide-react";
 import { instanceSettingsApi } from "@/api/instanceSettings";
@@ -7,16 +8,17 @@ import { queryKeys } from "../lib/queryKeys";
 import { cn } from "../lib/utils";
 
 export function InstanceExperimentalSettings() {
+  const { t } = useTranslation();
   const { setBreadcrumbs } = useBreadcrumbs();
   const queryClient = useQueryClient();
   const [actionError, setActionError] = useState<string | null>(null);
 
   useEffect(() => {
     setBreadcrumbs([
-      { label: "Instance Settings" },
-      { label: "Experimental" },
+      { label: t("settings.breadcrumb") },
+      { label: t("settings.experimental.title") },
     ]);
-  }, [setBreadcrumbs]);
+  }, [setBreadcrumbs, t]);
 
   const experimentalQuery = useQuery({
     queryKey: queryKeys.instance.experimentalSettings,
@@ -31,12 +33,12 @@ export function InstanceExperimentalSettings() {
       await queryClient.invalidateQueries({ queryKey: queryKeys.instance.experimentalSettings });
     },
     onError: (error) => {
-      setActionError(error instanceof Error ? error.message : "Failed to update experimental settings.");
+      setActionError(error instanceof Error ? error.message : t("settings.experimental.updateFailed"));
     },
   });
 
   if (experimentalQuery.isLoading) {
-    return <div className="text-sm text-muted-foreground">Loading experimental settings...</div>;
+    return <div className="text-sm text-muted-foreground">{t("settings.experimental.loading")}</div>;
   }
 
   if (experimentalQuery.error) {
@@ -44,7 +46,7 @@ export function InstanceExperimentalSettings() {
       <div className="text-sm text-destructive">
         {experimentalQuery.error instanceof Error
           ? experimentalQuery.error.message
-          : "Failed to load experimental settings."}
+          : t("settings.experimental.failed")}
       </div>
     );
   }
@@ -56,10 +58,10 @@ export function InstanceExperimentalSettings() {
       <div className="space-y-2">
         <div className="flex items-center gap-2">
           <FlaskConical className="h-5 w-5 text-muted-foreground" />
-          <h1 className="text-lg font-semibold">Experimental</h1>
+          <h1 className="text-lg font-semibold">{t("settings.experimental.title")}</h1>
         </div>
         <p className="text-sm text-muted-foreground">
-          Opt into features that are still being evaluated before they become default behavior.
+          {t("settings.experimental.subtitle")}
         </p>
       </div>
 
@@ -72,10 +74,9 @@ export function InstanceExperimentalSettings() {
       <section className="rounded-xl border border-border bg-card p-5">
         <div className="flex items-start justify-between gap-4">
           <div className="space-y-1.5">
-            <h2 className="text-sm font-semibold">Enabled Isolated Workspaces</h2>
+            <h2 className="text-sm font-semibold">{t("settings.experimental.isolatedWorkspaces")}</h2>
             <p className="max-w-2xl text-sm text-muted-foreground">
-              Show execution workspace controls in project configuration and allow isolated workspace behavior for new
-              and existing issue runs.
+              {t("settings.experimental.isolatedWorkspacesDesc")}
             </p>
           </div>
           <button

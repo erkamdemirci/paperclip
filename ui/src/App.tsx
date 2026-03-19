@@ -1,4 +1,5 @@
 import { Navigate, Outlet, Route, Routes, useLocation, useParams } from "@/lib/router";
+import { useTranslation } from "react-i18next";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Layout } from "./components/Layout";
@@ -42,6 +43,7 @@ import { loadLastInboxTab } from "./lib/inbox";
 import { shouldRedirectCompanylessRouteToOnboarding } from "./lib/onboarding-route";
 
 function BootstrapPendingPage({ hasActiveInvite = false }: { hasActiveInvite?: boolean }) {
+  const { t } = useTranslation();
   return (
     <div className="mx-auto max-w-xl py-10">
       <div className="rounded-lg border border-border bg-card p-6">
@@ -84,14 +86,16 @@ function CloudAccessGate() {
     retry: false,
   });
 
+  const { t } = useTranslation();
+
   if (healthQuery.isLoading || (isAuthenticatedMode && sessionQuery.isLoading)) {
-    return <div className="mx-auto max-w-xl py-10 text-sm text-muted-foreground">Loading...</div>;
+    return <div className="mx-auto max-w-xl py-10 text-sm text-muted-foreground">{t("common.loadingEllipsis")}</div>;
   }
 
   if (healthQuery.error) {
     return (
       <div className="mx-auto max-w-xl py-10 text-sm text-destructive">
-        {healthQuery.error instanceof Error ? healthQuery.error.message : "Failed to load app state"}
+        {healthQuery.error instanceof Error ? healthQuery.error.message : t("common.failedToLoad")}
       </div>
     );
   }
@@ -175,6 +179,7 @@ function LegacySettingsRedirect() {
 }
 
 function OnboardingRoutePage() {
+  const { t } = useTranslation();
   const { companies } = useCompany();
   const { openOnboarding } = useDialog();
   const { companyPrefix } = useParams<{ companyPrefix?: string }>();
@@ -215,11 +220,12 @@ function OnboardingRoutePage() {
 }
 
 function CompanyRootRedirect() {
+  const { t } = useTranslation();
   const { companies, selectedCompany, loading } = useCompany();
   const location = useLocation();
 
   if (loading) {
-    return <div className="mx-auto max-w-xl py-10 text-sm text-muted-foreground">Loading...</div>;
+    return <div className="mx-auto max-w-xl py-10 text-sm text-muted-foreground">{t("common.loadingEllipsis")}</div>;
   }
 
   const targetCompany = selectedCompany ?? companies[0] ?? null;
@@ -239,11 +245,12 @@ function CompanyRootRedirect() {
 }
 
 function UnprefixedBoardRedirect() {
+  const { t } = useTranslation();
   const location = useLocation();
   const { companies, selectedCompany, loading } = useCompany();
 
   if (loading) {
-    return <div className="mx-auto max-w-xl py-10 text-sm text-muted-foreground">Loading...</div>;
+    return <div className="mx-auto max-w-xl py-10 text-sm text-muted-foreground">{t("common.loadingEllipsis")}</div>;
   }
 
   const targetCompany = selectedCompany ?? companies[0] ?? null;
@@ -268,6 +275,7 @@ function UnprefixedBoardRedirect() {
 }
 
 function NoCompaniesStartPage() {
+  const { t } = useTranslation();
   const { openOnboarding } = useDialog();
 
   return (
@@ -278,7 +286,7 @@ function NoCompaniesStartPage() {
           Get started by creating a company.
         </p>
         <div className="mt-4">
-          <Button onClick={() => openOnboarding()}>New Company</Button>
+          <Button onClick={() => openOnboarding()}>{t("companies.newCompany")}</Button>
         </div>
       </div>
     </div>
