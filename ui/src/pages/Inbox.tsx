@@ -68,11 +68,11 @@ type SectionKey =
   | "failed_runs"
   | "alerts";
 
-const RUN_SOURCE_LABELS: Record<string, string> = {
-  timer: "Scheduled",
-  assignment: "Assignment",
-  on_demand: "Manual",
-  automation: "Automation",
+const RUN_SOURCE_LABEL_KEYS: Record<string, string> = {
+  timer: "inbox.runSourceTimer",
+  assignment: "inbox.runSourceAssignment",
+  on_demand: "inbox.runSourceOnDemand",
+  automation: "inbox.runSourceAutomation",
 };
 
 function firstNonEmptyLine(value: string | null | undefined): string | null {
@@ -120,7 +120,7 @@ function FailedRunCard({
   const navigate = useNavigate();
   const issueId = readIssueIdFromRun(run);
   const issue = issueId ? issueById.get(issueId) ?? null : null;
-  const sourceLabel = RUN_SOURCE_LABELS[run.invocationSource] ?? t("inbox.runSourceOnDemand");
+  const sourceLabel = t(RUN_SOURCE_LABEL_KEYS[run.invocationSource] ?? "inbox.runSourceOnDemand");
   const displayError = runFailureMessage(run);
 
   const retryRun = useMutation({
