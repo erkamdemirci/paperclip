@@ -313,7 +313,7 @@ export function Layout() {
                   <Link
                     to={instanceSettingsTarget}
                     aria-label="Instance settings"
-                    title="Instance settings"
+                    title={t("settings.breadcrumb")}
                     onClick={() => {
                       if (isMobile) setSidebarOpen(false);
                     }}
@@ -372,7 +372,7 @@ export function Layout() {
                   <Link
                     to={instanceSettingsTarget}
                     aria-label="Instance settings"
-                    title="Instance settings"
+                    title={t("settings.breadcrumb")}
                     onClick={() => {
                       if (isMobile) setSidebarOpen(false);
                     }}

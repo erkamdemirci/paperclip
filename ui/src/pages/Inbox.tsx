@@ -685,7 +685,7 @@ export function Inbox() {
               onValueChange={(value) => setAllCategoryFilter(value as InboxCategoryFilter)}
             >
               <SelectTrigger className="h-8 w-[170px] text-xs">
-                <SelectValue placeholder="Category" />
+                <SelectValue placeholder={t("inbox.categoryPlaceholder")} />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="everything">{t("inbox.allCategories")}</SelectItem>

@@ -202,6 +202,7 @@
   "agents.failedToResetSession": "Failed to reset session",
   "agents.failedToUpdatePermissions": "Failed to update permissions",
   "agents.actionFailed": "Action failed",
+  "agents.keyNamePlaceholder": "Key name (e.g. production)",
 
   "projects.breadcrumb": "Projects",
   "projects.selectCompany": "Select a company to view projects.",
@@ -882,5 +883,15 @@
   "runSource.timer": "Timer",
   "runSource.assignment": "Assignment",
   "runSource.onDemand": "On-demand",
-  "runSource.automation": "Automation"
+  "runSource.automation": "Automation",
+
+  "inbox.categoryPlaceholder": "Category",
+  "newIssue.issueTitlePlaceholder": "Issue title",
+  "newIssue.assigneePlaceholder": "Assignee",
+  "newIssue.projectPlaceholder": "Project",
+  "newIssue.defaultModelPlaceholder": "Default model",
+  "newIssue.addDescriptionPlaceholder": "Add description...",
+  "newProject.targetDatePlaceholder": "Target date",
+  "plugins.uninstallTitle": "Uninstall",
+  "settings.instanceSettings": "Instance settings"
 }

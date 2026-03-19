@@ -202,6 +202,7 @@
   "agents.failedToResetSession": "Oturum sıfırlanamadı",
   "agents.failedToUpdatePermissions": "İzinler güncellenemedi",
   "agents.actionFailed": "İşlem başarısız",
+  "agents.keyNamePlaceholder": "Anahtar adı (ör. production)",
 
   "projects.breadcrumb": "Projeler",
   "projects.selectCompany": "Projeleri görüntülemek için bir şirket seçin.",
@@ -882,5 +883,15 @@
   "runSource.timer": "Zamanlayıcı",
   "runSource.assignment": "Atama",
   "runSource.onDemand": "İsteğe bağlı",
-  "runSource.automation": "Otomasyon"
+  "runSource.automation": "Otomasyon",
+
+  "inbox.categoryPlaceholder": "Kategori",
+  "newIssue.issueTitlePlaceholder": "Görev başlığı",
+  "newIssue.assigneePlaceholder": "Atanan kişi",
+  "newIssue.projectPlaceholder": "Proje",
+  "newIssue.defaultModelPlaceholder": "Varsayılan model",
+  "newIssue.addDescriptionPlaceholder": "Açıklama ekle...",
+  "newProject.targetDatePlaceholder": "Hedef tarih",
+  "plugins.uninstallTitle": "Kaldır",
+  "settings.instanceSettings": "Sunucu ayarları"
 }
