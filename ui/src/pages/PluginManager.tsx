@@ -6,6 +6,7 @@
  */
 import { useEffect, useMemo, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import type { PluginRecord } from "@paperclipai/shared";
 import { Link } from "@/lib/router";
 import { AlertTriangle, FlaskConical, Plus, Power, Puzzle, Settings, Trash } from "lucide-react";
@@ -61,6 +62,7 @@ function getPluginErrorSummary(plugin: PluginRecord): string {
  * @see doc/plugins/PLUGIN_SPEC.md §3 — Plugin Lifecycle for status semantics.
  */
 export function PluginManager() {
+  const { t } = useTranslation();
   const { selectedCompany } = useCompany();
   const { setBreadcrumbs } = useBreadcrumbs();
   const queryClient = useQueryClient();
@@ -103,10 +105,10 @@ export function PluginManager() {
       invalidatePluginQueries();
       setInstallDialogOpen(false);
       setInstallPackage("");
-      pushToast({ title: "Plugin installed successfully", tone: "success" });
+      pushToast({ title: t("plugins.pluginInstalled"), tone: "success" });
     },
     onError: (err: Error) => {
-      pushToast({ title: "Failed to install plugin", body: err.message, tone: "error" });
+      pushToast({ title: t("plugins.failedInstall"), body: err.message, tone: "error" });
     },
   });
 
@@ -114,10 +116,10 @@ export function PluginManager() {
     mutationFn: (pluginId: string) => pluginsApi.uninstall(pluginId),
     onSuccess: () => {
       invalidatePluginQueries();
-      pushToast({ title: "Plugin uninstalled successfully", tone: "success" });
+      pushToast({ title: t("plugins.pluginUninstalled"), tone: "success" });
     },
     onError: (err: Error) => {
-      pushToast({ title: "Failed to uninstall plugin", body: err.message, tone: "error" });
+      pushToast({ title: t("plugins.failedUninstall"), body: err.message, tone: "error" });
     },
   });
 
@@ -125,10 +127,10 @@ export function PluginManager() {
     mutationFn: (pluginId: string) => pluginsApi.enable(pluginId),
     onSuccess: () => {
       invalidatePluginQueries();
-      pushToast({ title: "Plugin enabled", tone: "success" });
+      pushToast({ title: t("plugins.pluginEnabled"), tone: "success" });
     },
     onError: (err: Error) => {
-      pushToast({ title: "Failed to enable plugin", body: err.message, tone: "error" });
+      pushToast({ title: t("plugins.failedEnable"), body: err.message, tone: "error" });
     },
   });
 
@@ -136,10 +138,10 @@ export function PluginManager() {
     mutationFn: (pluginId: string) => pluginsApi.disable(pluginId),
     onSuccess: () => {
       invalidatePluginQueries();
-      pushToast({ title: "Plugin disabled", tone: "info" });
+      pushToast({ title: t("plugins.pluginDisabled"), tone: "info" });
     },
     onError: (err: Error) => {
-      pushToast({ title: "Failed to disable plugin", body: err.message, tone: "error" });
+      pushToast({ title: t("plugins.failedDisable"), body: err.message, tone: "error" });
     },
   });
 
@@ -410,7 +412,7 @@ export function PluginManager() {
                           variant="outline"
                           size="icon-sm"
                           className="h-8 w-8 text-destructive hover:text-destructive"
-                          title="Uninstall"
+                          title={t("common.uninstall")}
                           onClick={() => {
                             setUninstallPluginId(plugin.id);
                             setUninstallPluginName(plugin.manifestJson.displayName ?? plugin.packageName);

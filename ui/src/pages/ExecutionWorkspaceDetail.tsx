@@ -1,4 +1,5 @@
 import { Link, useParams } from "@/lib/router";
+import { useTranslation } from "react-i18next";
 import { useQuery } from "@tanstack/react-query";
 import { ExternalLink } from "lucide-react";
 import { executionWorkspacesApi } from "../api/execution-workspaces";
@@ -25,6 +26,7 @@ function DetailRow({ label, children }: { label: string; children: React.ReactNo
 
 export function ExecutionWorkspaceDetail() {
   const { workspaceId } = useParams<{ workspaceId: string }>();
+  const { t } = useTranslation();
 
   const { data: workspace, isLoading, error } = useQuery({
     queryKey: queryKeys.executionWorkspaces.detail(workspaceId!),
@@ -32,14 +34,14 @@ export function ExecutionWorkspaceDetail() {
     enabled: Boolean(workspaceId),
   });
 
-  if (isLoading) return <p className="text-sm text-muted-foreground">Loading...</p>;
-  if (error) return <p className="text-sm text-destructive">{error instanceof Error ? error.message : "Failed to load workspace"}</p>;
+  if (isLoading) return <p className="text-sm text-muted-foreground">{t("common.loading")}</p>;
+  if (error) return <p className="text-sm text-destructive">{error instanceof Error ? error.message : t("execution.failedToLoad")}</p>;
   if (!workspace) return null;
 
   return (
     <div className="max-w-2xl space-y-4">
       <div className="space-y-1">
-        <div className="text-xs text-muted-foreground">Execution workspace</div>
+        <div className="text-xs text-muted-foreground">{t("execution.workspaceLabel")}</div>
         <h1 className="text-2xl font-semibold">{workspace.name}</h1>
         <div className="text-sm text-muted-foreground">
           {workspace.status} · {workspace.mode} · {workspace.providerType}
@@ -47,21 +49,21 @@ export function ExecutionWorkspaceDetail() {
       </div>
 
       <div className="rounded-lg border border-border p-4">
-        <DetailRow label="Project">
-          {workspace.projectId ? <Link to={`/projects/${workspace.projectId}`} className="hover:underline">{workspace.projectId}</Link> : "None"}
+        <DetailRow label={t("execution.project")}>
+          {workspace.projectId ? <Link to={`/projects/${workspace.projectId}`} className="hover:underline">{workspace.projectId}</Link> : t("common.none")}
         </DetailRow>
-        <DetailRow label="Source issue">
-          {workspace.sourceIssueId ? <Link to={`/issues/${workspace.sourceIssueId}`} className="hover:underline">{workspace.sourceIssueId}</Link> : "None"}
+        <DetailRow label={t("execution.sourceIssue")}>
+          {workspace.sourceIssueId ? <Link to={`/issues/${workspace.sourceIssueId}`} className="hover:underline">{workspace.sourceIssueId}</Link> : t("common.none")}
         </DetailRow>
-        <DetailRow label="Branch">{workspace.branchName ?? "None"}</DetailRow>
-        <DetailRow label="Base ref">{workspace.baseRef ?? "None"}</DetailRow>
-        <DetailRow label="Working dir">
-          <span className="break-all font-mono text-xs">{workspace.cwd ?? "None"}</span>
+        <DetailRow label={t("execution.branch")}>{workspace.branchName ?? t("common.none")}</DetailRow>
+        <DetailRow label={t("execution.baseRef")}>{workspace.baseRef ?? t("common.none")}</DetailRow>
+        <DetailRow label={t("execution.workingDir")}>
+          <span className="break-all font-mono text-xs">{workspace.cwd ?? t("common.none")}</span>
         </DetailRow>
-        <DetailRow label="Provider ref">
-          <span className="break-all font-mono text-xs">{workspace.providerRef ?? "None"}</span>
+        <DetailRow label={t("execution.providerRef")}>
+          <span className="break-all font-mono text-xs">{workspace.providerRef ?? t("common.none")}</span>
         </DetailRow>
-        <DetailRow label="Repo URL">
+        <DetailRow label={t("execution.repoUrl")}>
           {workspace.repoUrl && isSafeExternalUrl(workspace.repoUrl) ? (
             <a href={workspace.repoUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 hover:underline">
               {workspace.repoUrl}
@@ -69,12 +71,12 @@ export function ExecutionWorkspaceDetail() {
             </a>
           ) : workspace.repoUrl ? (
             <span className="break-all font-mono text-xs">{workspace.repoUrl}</span>
-          ) : "None"}
+          ) : t("common.none")}
         </DetailRow>
-        <DetailRow label="Opened">{new Date(workspace.openedAt).toLocaleString()}</DetailRow>
-        <DetailRow label="Last used">{new Date(workspace.lastUsedAt).toLocaleString()}</DetailRow>
-        <DetailRow label="Cleanup">
-          {workspace.cleanupEligibleAt ? `${new Date(workspace.cleanupEligibleAt).toLocaleString()}${workspace.cleanupReason ? ` · ${workspace.cleanupReason}` : ""}` : "Not scheduled"}
+        <DetailRow label={t("execution.opened")}>{new Date(workspace.openedAt).toLocaleString()}</DetailRow>
+        <DetailRow label={t("execution.lastUsed")}>{new Date(workspace.lastUsedAt).toLocaleString()}</DetailRow>
+        <DetailRow label={t("execution.cleanupLabel")}>
+          {workspace.cleanupEligibleAt ? `${new Date(workspace.cleanupEligibleAt).toLocaleString()}${workspace.cleanupReason ? ` · ${workspace.cleanupReason}` : ""}` : t("execution.notScheduled")}
         </DetailRow>
       </div>
     </div>

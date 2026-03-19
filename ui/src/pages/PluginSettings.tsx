@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { Puzzle, ArrowLeft, ShieldAlert, ActivitySquare, CheckCircle, XCircle, Loader2, Clock, Cpu, Webhook, CalendarClock, AlertTriangle } from "lucide-react";
 import { useCompany } from "@/context/CompanyContext";
 import { useBreadcrumbs } from "@/context/BreadcrumbContext";
@@ -58,6 +59,7 @@ import {
  * @see doc/plugins/PLUGIN_SPEC.md §19.8 — Plugin Settings UI.
  */
 export function PluginSettings() {
+  const { t } = useTranslation();
   const { selectedCompany, selectedCompanyId } = useCompany();
   const { setBreadcrumbs } = useBreadcrumbs();
   const { companyPrefix, pluginId } = useParams<{ companyPrefix?: string; pluginId: string }>();
@@ -114,10 +116,10 @@ export function PluginSettings() {
 
   useEffect(() => {
     setBreadcrumbs([
-      { label: selectedCompany?.name ?? "Company", href: "/dashboard" },
-      { label: "Settings", href: "/instance/settings/heartbeats" },
-      { label: "Plugins", href: "/instance/settings/plugins" },
-      { label: plugin?.manifestJson?.displayName ?? plugin?.packageName ?? "Plugin Details" },
+      { label: selectedCompany?.name ?? t("common.company"), href: "/dashboard" },
+      { label: t("settings.breadcrumb"), href: "/instance/settings/heartbeats" },
+      { label: t("plugins.title").replace(" Manager", ""), href: "/instance/settings/plugins" },
+      { label: plugin?.manifestJson?.displayName ?? plugin?.packageName ?? t("plugins.details") },
     ]);
   }, [selectedCompany?.name, setBreadcrumbs, companyPrefix, plugin]);
 
@@ -126,7 +128,7 @@ export function PluginSettings() {
   }, [pluginId]);
 
   if (pluginLoading) {
-    return <div className="p-4 text-sm text-muted-foreground">Loading plugin details...</div>;
+    return <div className="p-4 text-sm text-muted-foreground">{t("plugins.loadingPlugin")}</div>;
   }
 
   if (!plugin) {
@@ -140,7 +142,7 @@ export function PluginSettings() {
       : plugin.status === "error"
         ? "destructive"
         : "secondary";
-  const pluginDescription = plugin.manifestJson.description || "No description provided.";
+  const pluginDescription = plugin.manifestJson.description || t("plugins.noDescriptionProvided");
   const pluginCapabilities = plugin.manifestJson.capabilities ?? [];
 
   return (
@@ -167,8 +169,8 @@ export function PluginSettings() {
         <PageTabBar
           align="start"
           items={[
-            { value: "configuration", label: "Configuration" },
-            { value: "status", label: "Status" },
+            { value: "configuration", label: t("plugins.tabConfiguration") },
+            { value: "status", label: t("plugins.tabStatus") },
           ]}
           value={activeTab}
           onValueChange={(value) => setActiveTab(value as "configuration" | "status")}
@@ -563,6 +565,7 @@ interface PluginConfigFormProps {
  * re-renders on field changes, not the entire page.
  */
 function PluginConfigForm({ pluginId, schema, initialValues, isLoading, pluginStatus, supportsConfigTest }: PluginConfigFormProps) {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
 
   // Form values: start with saved values, fall back to schema defaults
@@ -600,14 +603,14 @@ function PluginConfigForm({ pluginId, schema, initialValues, isLoading, pluginSt
     mutationFn: (configJson: Record<string, unknown>) =>
       pluginsApi.saveConfig(pluginId, configJson),
     onSuccess: () => {
-      setSaveMessage({ type: "success", text: "Configuration saved." });
+      setSaveMessage({ type: "success", text: t("plugins.configSaved") });
       setTestResult(null);
       queryClient.invalidateQueries({ queryKey: queryKeys.plugins.config(pluginId) });
       // Clear success message after 3s
       setTimeout(() => setSaveMessage(null), 3000);
     },
     onError: (err: Error) => {
-      setSaveMessage({ type: "error", text: err.message || "Failed to save configuration." });
+      setSaveMessage({ type: "error", text: err.message || t("plugins.failedSaveConfig") });
     },
   });
 
@@ -617,13 +620,13 @@ function PluginConfigForm({ pluginId, schema, initialValues, isLoading, pluginSt
       pluginsApi.testConfig(pluginId, configJson),
     onSuccess: (result) => {
       if (result.valid) {
-        setTestResult({ type: "success", text: "Configuration test passed." });
+        setTestResult({ type: "success", text: t("plugins.testPassed") });
       } else {
-        setTestResult({ type: "error", text: result.message || "Configuration test failed." });
+        setTestResult({ type: "error", text: result.message || t("plugins.testFailed") });
       }
     },
     onError: (err: Error) => {
-      setTestResult({ type: "error", text: err.message || "Configuration test failed." });
+      setTestResult({ type: "error", text: err.message || t("plugins.testFailed") });
     },
   });
 
@@ -711,10 +714,10 @@ function PluginConfigForm({ pluginId, schema, initialValues, isLoading, pluginSt
           {saveMutation.isPending ? (
             <>
               <Loader2 className="h-3.5 w-3.5 animate-spin" />
-              Saving...
+              {t("plugins.savingConfig")}
             </>
           ) : (
-            "Save Configuration"
+            t("plugins.saveConfig")
           )}
         </Button>
         {pluginStatus === "ready" && supportsConfigTest && (
@@ -727,10 +730,10 @@ function PluginConfigForm({ pluginId, schema, initialValues, isLoading, pluginSt
             {testMutation.isPending ? (
               <>
                 <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                Testing...
+                {t("plugins.testingConfig")}
               </>
             ) : (
-              "Test Configuration"
+              t("plugins.testConfig")
             )}
           </Button>
         )}

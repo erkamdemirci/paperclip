@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback, useMemo, type ChangeEvent, type DragEvent } from "react";
+import { useTranslation } from "react-i18next";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useDialog } from "../context/DialogContext";
 import { useCompany } from "../context/CompanyContext";
@@ -280,6 +281,7 @@ export function NewIssueDialog() {
   const { companies, selectedCompanyId, selectedCompany } = useCompany();
   const queryClient = useQueryClient();
   const { pushToast } = useToast();
+  const { t } = useTranslation();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [status, setStatus] = useState("todo");
@@ -435,8 +437,10 @@ export function NewIssueDialog() {
         const prefix = (companies.find((company) => company.id === companyId)?.issuePrefix ?? "").trim();
         const issueRef = issue.identifier ?? issue.id;
         pushToast({
-          title: `Created ${issueRef} with upload warnings`,
-          body: `${failures.length} staged ${failures.length === 1 ? "file" : "files"} could not be added.`,
+          title: t("newIssue.createdWithWarnings", { ref: issueRef }),
+          body: failures.length === 1
+            ? t("newIssue.stagedFilesError", { count: failures.length })
+            : t("newIssue.stagedFilesErrorPlural", { count: failures.length }),
           tone: "warn",
           action: prefix
             ? { label: `Open ${issueRef}`, href: `/${prefix}/issues/${issueRef}` }
@@ -814,7 +818,7 @@ export function NewIssueDialog() {
   const hasSavedDraft = Boolean(savedDraft?.title.trim() || savedDraft?.description.trim());
   const canDiscardDraft = hasDraft || hasSavedDraft;
   const createIssueErrorMessage =
-    createIssue.error instanceof Error ? createIssue.error.message : "Failed to create issue. Try again.";
+    createIssue.error instanceof Error ? createIssue.error.message : t("newIssue.failedToCreate");
   const stagedDocuments = stagedFiles.filter((file) => file.kind === "document");
   const stagedAttachments = stagedFiles.filter((file) => file.kind === "attachment");
 
@@ -981,7 +985,7 @@ export function NewIssueDialog() {
         <div className="px-4 pt-4 pb-2 shrink-0">
           <textarea
             className="w-full text-lg font-semibold bg-transparent outline-none resize-none overflow-hidden placeholder:text-muted-foreground/50"
-            placeholder="Issue title"
+            placeholder={t("newIssue.issueTitlePlaceholder")}
             rows={1}
             value={title}
             onChange={(e) => {
@@ -1026,7 +1030,7 @@ export function NewIssueDialog() {
                 ref={assigneeSelectorRef}
                 value={assigneeValue}
                 options={assigneeOptions}
-                placeholder="Assignee"
+                placeholder={t("newIssue.assigneePlaceholder")}
                 disablePortal
                 noneLabel="No assignee"
                 searchPlaceholder="Search assignees..."
@@ -1077,7 +1081,7 @@ export function NewIssueDialog() {
                 ref={projectSelectorRef}
                 value={projectId}
                 options={projectOptions}
-                placeholder="Project"
+                placeholder={t("newIssue.projectPlaceholder")}
                 disablePortal
                 noneLabel="No project"
                 searchPlaceholder="Search projects..."
@@ -1179,7 +1183,7 @@ export function NewIssueDialog() {
                   <InlineEntitySelector
                     value={assigneeModelOverride}
                     options={modelOverrideOptions}
-                    placeholder="Default model"
+                    placeholder={t("newIssue.defaultModelPlaceholder")}
                     disablePortal
                     noneLabel="Default model"
                     searchPlaceholder="Search models..."
@@ -1246,7 +1250,7 @@ export function NewIssueDialog() {
               ref={descriptionEditorRef}
               value={description}
               onChange={setDescription}
-              placeholder="Add description..."
+              placeholder={t("newIssue.addDescriptionPlaceholder")}
               bordered={false}
               mentions={mentionOptions}
               contentClassName={cn("text-sm text-muted-foreground pb-12", expanded ? "min-h-[220px]" : "min-h-[120px]")}
